@@ -18,7 +18,7 @@ if [[ $(id -u) = 0 ]]; then
 fi
 
 # Check if server is running
-if ! screen -list | grep -q "\.servername"; then
+if ! screen -list | grep -q "bedrock-$1"; then
   echo "Server is not currently running!"
   exit 1
 fi
@@ -47,18 +47,18 @@ done
 # Stop the server
 while [[ $CountdownTime -gt 0 ]]; do
   if [[ $CountdownTime -eq 1 ]]; then
-    screen -Rd servername -X stuff "say Stopping server in 60 seconds...$(printf '\r')"
+    screen -Rd "bedrock-$1" -X stuff "say Stopping server in 60 seconds...$(printf '\r')"
     echo "Stopping server in 60 seconds..."
     sleep 30;
-    screen -Rd servername -X stuff "say Stopping server in 30 seconds...$(printf '\r')"
+    screen -Rd "bedrock-$1" -X stuff "say Stopping server in 30 seconds...$(printf '\r')"
     echo "Stopping server in 30 seconds..."
     sleep 20;
-    screen -Rd servername -X stuff "say Stopping server in 10 seconds...$(printf '\r')"
+    screen -Rd "bedrock-$1" -X stuff "say Stopping server in 10 seconds...$(printf '\r')"
     echo "Stopping server in 10 seconds..."
     sleep 10;
     CountdownTime=$((CountdownTime-1))
   else
-    screen -Rd servername -X stuff "say Stopping server in $CountdownTime minutes...$(printf '\r')"
+    screen -Rd "bedrock-$1" -X stuff "say Stopping server in $CountdownTime minutes...$(printf '\r')"
     echo "Stopping server in $CountdownTime minutes...$(printf '\r')"
     sleep 60;
     CountdownTime=$((CountdownTime-1))
@@ -66,13 +66,13 @@ while [[ $CountdownTime -gt 0 ]]; do
   echo "Waiting for $CountdownTime more minutes ..."
 done
 echo "Stopping Minecraft server ..."
-screen -Rd servername -X stuff "say Stopping server (stop.sh called)...$(printf '\r')"
-screen -Rd servername -X stuff "stop$(printf '\r')"
+screen -Rd "bedrock-$1" -X stuff "say Stopping server (stop.sh called)...$(printf '\r')"
+screen -Rd "bedrock-$1" -X stuff "stop$(printf '\r')"
 
 # Wait up to 20 seconds for server to close
 StopChecks=0
 while [[ $StopChecks -lt 20 ]]; do
-  if ! screen -list | grep -q "\.servername"; then
+  if ! screen -list | grep -q "bedrock-$1"; then
     break
   fi
   sleep 1;
@@ -80,9 +80,9 @@ while [[ $StopChecks -lt 20 ]]; do
 done
 
 # Force quit if server is still open
-if screen -list | grep -q "\.servername"; then
+if screen -list | grep -q "bedrock-$1"; then
   echo "Minecraft server still hasn't stopped after 20 seconds, closing screen manually"
-  screen -S servername -X quit
+  screen -S "bedrock-$1" -X quit
 fi
 
 echo "Minecraft server servername stopped."
