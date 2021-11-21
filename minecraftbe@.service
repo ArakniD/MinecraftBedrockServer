@@ -1,0 +1,16 @@
+[Unit]
+Description=MineCraft bedrock server; %I
+After=network-online.target
+
+[Service]
+User=pmmp
+WorkingDirectory=/home/pmmp/minecraftbe
+Type=forking
+ExecStart=/bin/bash /home/pmmp/minecraftbe/start.sh %I
+ExecStop=/bin/bash /home/pmmp/minecraftbe/stop.sh %I
+GuessMainPID=no
+TimeoutStartSec=600
+Nice=-15
+
+[Install]
+WantedBy=bedrock.target
